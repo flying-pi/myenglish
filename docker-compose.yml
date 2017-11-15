@@ -1,0 +1,38 @@
+version: '2'
+services:
+  myenglish_backend:
+    container_name: myenglish_backend
+    env_file: ./env/local.env
+    build:
+      context: ./myEnglishBackend
+      dockerfile: Dockerfile
+    command: "python ./manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./myEnglishBackend:/backend
+    ports:
+     - "8000:8000"
+    links:
+      - myenglish_mongo
+
+  myenglish_front:
+    container_name: myenglish_front
+    env_file: ./env/local.env
+    build:
+      context: ./myenglish-front
+      dockerfile: Dockerfile
+    command: "ng serve --open --port 8080 --host 0.0.0.0"
+    volumes:
+      - ./myenglish-front:/front
+      - /front/node_modules
+    ports:
+     - "8080:8080"
+
+  myenglish_mongo:
+    container_name: myenglish_mongo
+    env_file: ./env/local.env
+    image: mongo:3.5
+    ports:
+      - "27017:27017"
+
+volumes:
+  myenglish_mongo:
